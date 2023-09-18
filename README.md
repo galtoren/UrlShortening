@@ -31,7 +31,7 @@ Packages used:
 
 1. make sure you have pip and python/python3 installed on you computer
 2. clone the [repository](https://github.com/galtoren/UrlShortening) to your local PC:
-3. navigate to the main directory of the project in the terminal: ```home_assignment``` and then to ```requirements```
+3. navigate to the main directory of the project in the terminal: ```UrlShortening``` and then to ```requirements```
 4. check that ```packages_installer.py``` is in this directory (write: ```ls``` in the terminal, and look for the file)
 5. run this line(if you have python change python3 to python):
 
@@ -41,7 +41,7 @@ Packages used:
 
 [how to run-link]: #how-to-run
 
-1. navigate to the home_assignment directory and run:
+1. navigate to the ```UrlShortening``` directory and run:
 
    ```uvicorn app:app --host 0.0.0.0 --port 8000```
 
