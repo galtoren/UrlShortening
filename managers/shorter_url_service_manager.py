@@ -8,11 +8,11 @@ class ShorterUrlServiceManager:
         self._hash_generator = hash_generator
         self._db = mysql_db
 
-    async def get_origin_url(self, short_url: str):
+    async def get_origin_url(self, short_url: str) -> str:
         url_mapping_domain = await self._db.get_origin_url(short_url)
         return url_mapping_domain.origin_url
 
-    async def generate_shorter_url(self, long_url: str):
+    async def generate_shorter_url(self, long_url: str) -> UrlDomainEntity:
         hashed_url = self._hash_generator.generate_hash(long_url)
         url_mapping_domain = UrlDomainEntity(origin_url=long_url, shorter_url=hashed_url)
         created_url_mapping_domain = await self._db.generate_shorter_url(url_mapping_domain)
