@@ -1,5 +1,4 @@
 from abc import abstractmethod
-from typing import Union
 
 from db.domain_entities import UrlDomainEntity
 

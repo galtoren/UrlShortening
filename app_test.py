@@ -41,7 +41,7 @@ class AppTest(unittest.TestCase):
 
     def test_url_not_found(self):
         get_url = f"{self.base_url}/get_origin_url"
-        url = "https://chat.openai.com/"
+        url = "https://gat_toren/nice_url_mate"
         response = requests.get(url=f"{get_url}",
                                 params={'url': url})
         self.assertEqual(response.status_code, 404)

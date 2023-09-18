@@ -1,6 +1,3 @@
-from typing import Union
-
-import sqlalchemy
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
