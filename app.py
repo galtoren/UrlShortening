@@ -9,6 +9,7 @@ from exceptions.already_exists_exception import AlreadyExists
 from exceptions.not_found_exception import NotFound
 from helpers.error_generator import ErrorsGenerator
 from helpers.hash_generator import HashGenerator
+from helpers.url_validator import UrlValidator
 from managers.shorter_url_service_manager import ShorterUrlServiceManager
 from proto.protoEntities import GenerateShorterUrlRequest
 
@@ -26,6 +27,7 @@ async def shutdown_db_client():
 
 
 error_generator = ErrorsGenerator()
+url_validator = UrlValidator()
 db = MySqlDB()
 hash_generator = HashGenerator()
 service_manager = ShorterUrlServiceManager(hash_generator, db)
@@ -35,25 +37,29 @@ service_manager = ShorterUrlServiceManager(hash_generator, db)
 async def get_origin_url(url: Union[str, None]):
     if url is not None:
         try:
-            origin_url = await service_manager.get_origin_url(url)
-            return origin_url
+            if url_validator.is_valid_url(url):
+                origin_url = await service_manager.get_origin_url(url)
+                return origin_url
+            else:
+                return error_generator.generate_error(400, f"InvalidArgument: url param must be a valid url")
         except NotFound as e:
             return error_generator.generate_error(e.code, e.msg)
         except Exception as e:
             return error_generator.generate_error(500, f"InternalError: unexpected error: {e}")
     else:
-        return error_generator.generate_error(400, "Invalid Argument: url param can't be empty")
+        return error_generator.generate_error(400, "InvalidArgument: url param can't be empty")
 
 
 @app.post("/generate_shorter_url")
 async def generate_shorter_url(generate_shorter_url_request: GenerateShorterUrlRequest):
     try:
-        url_mapping_domain = await service_manager.generate_shorter_url(generate_shorter_url_request.url)
-        return url_mapping_domain
+        if url_validator.is_valid_url(generate_shorter_url_request.url):
+            url_mapping_domain = await service_manager.generate_shorter_url(generate_shorter_url_request.url)
+            return url_mapping_domain
+        else:
+            return error_generator.generate_error(400, f"InvalidArgument: url param must be a valid url")
     except AlreadyExists as e:
-        return error_generator.generate_error(409,
-                                              f"AlreadyExists: shorter url for: {generate_shorter_url_request.url} is "
-                                              f"already exists")
+        return error_generator.generate_error(e.code, e.msg)
     except Exception as e:
         return error_generator.generate_error(500, f"InternalError: unexpected error: {e}")
 

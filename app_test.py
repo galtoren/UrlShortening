@@ -16,6 +16,14 @@ class AppTest(unittest.TestCase):
         response = requests.post(url, json=data)
         self.assertEqual(response.status_code, 200)
 
+    def test_generate_shorter_url_with_invalid_url(self):
+        url = f"{self.base_url}/generate_shorter_url"
+        data = {
+            "url": "invalid-url",
+        }
+        response = requests.post(url, json=data)
+        self.assertEqual(response.status_code, 400)
+
     def test_generate_shorter_url_already_exist(self):
         url = f"{self.base_url}/generate_shorter_url"
         random_url_to_short = generate_random_string(100)
@@ -46,7 +54,17 @@ class AppTest(unittest.TestCase):
                                 params={'url': url})
         self.assertEqual(response.status_code, 404)
 
+    def test_url_not_found_invalid_url(self):
+        get_url = f"{self.base_url}/get_origin_url"
+        url = "invalid-url"
+        response = requests.get(url=f"{get_url}",
+                                params={'url': url})
+        self.assertEqual(response.status_code, 400)
+
 
 def generate_random_string(length: int):
+    basic_domain = "google.com"
     characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for _ in range(length))
+    random_path = ''.join(random.choice(characters) for _ in range(length))
+    random_url = f"http://{basic_domain}/{random_path}"
+    return random_url

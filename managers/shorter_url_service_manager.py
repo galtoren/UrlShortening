@@ -14,6 +14,7 @@ class ShorterUrlServiceManager:
 
     async def generate_shorter_url(self, long_url: str) -> UrlDomainEntity:
         hashed_url = self._hash_generator.generate_hash(long_url)
-        url_mapping_domain = UrlDomainEntity(origin_url=long_url, shorter_url=hashed_url)
+        new_url = f"http://{hashed_url}"
+        url_mapping_domain = UrlDomainEntity(origin_url=long_url, shorter_url=new_url)
         created_url_mapping_domain = await self._db.generate_shorter_url(url_mapping_domain)
         return created_url_mapping_domain
